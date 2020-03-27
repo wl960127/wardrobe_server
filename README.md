@@ -1,10 +1,12 @@
+#### wardrobe_server
+
 #### 第三方
 
 [Gin 简易实践](https://studygolang.com/articles/15980)
 
 [主参考](https://github.com/eddycjy/go-gin-example)
-
-[jwt](go get -u github.com/dgrijalva/jwt-go)
+- jwt
+  - go get -u github.com/dgrijalva/jwt-go
 
 [ 解析ini格式的配置文件 ](https://github.com/go-ini/ini)
 
@@ -14,5 +16,5 @@
 
 - 带token请求
 
-  # wardrobe_server
-# wardrobe_server
+
+

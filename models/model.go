@@ -26,7 +26,8 @@ type User struct {
 type Picture struct {
 	gorm.Model
 	MD5    string `gorm:"not null;unique"`
-	URL    string `gorm:"not null;unique"`
+	URL    string `gorm:"not null;unique"`          
+	AbsolutePath    string `gorm:"not null;unique"`          
 	BRAND  string // 品牌
 	COLOR  string //颜色
 	LABLE  string // 备注
@@ -77,7 +78,7 @@ func init() {
 
 	fmt.Println("配置 " + str)
 	if err != nil {
-		logging.Info(err)
+		logging.Error(err)
 	} else {
 		db.SingularTable(true)
 		db.LogMode(true)

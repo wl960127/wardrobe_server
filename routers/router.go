@@ -4,6 +4,7 @@ import (
 	"wardrobe_server/middleware/jwt"
 	"wardrobe_server/pkg/setting"
 	api "wardrobe_server/routers/api"
+	v1 "wardrobe_server/routers/api/v1"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,7 +29,7 @@ func InitRouter() *gin.Engine {
 	{
 		apiV1.GET("/users", api.QureyUser)
 
-		apiV1.GET("/pics",api.AddPic)
+		apiV1.POST("/pics", v1.AddPic)
 
 		// apiV1.GET("/userInfo", api.GetUserInfo)
 

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"os"
@@ -34,14 +35,28 @@ func CheckPermission(src string) bool {
 }
 
 // IsNotExistMkDir 如果不存在则新建文件夹
-func IsNotExistMkDir(src string) error {
-	if exist := CheckExist(src); exist == false {
-		if err := MkDir(src); err != nil {
+func IsNotExistMkDir(dir string)  error{
+	// 判断目录是否存在
+	_, err := os.Stat(dir)
+	if os.IsNotExist(err) {
+		// 必须分成两步：先创建文件夹、再修改权限
+		err := os.MkdirAll(dir, 0777) //0777也可以os.ModePerm
+		os.Chmod(dir, 0777)
+		if err != nil {
+			fmt.Printf("\n创建文件夹失败 failed![%v]\n", err)
 			return err
+		} else {
+			fmt.Printf("\n 创建文件夹成功!\n")
+
+			return nil
 		}
 	}
+	if os.IsExist(err) {
+		return nil
+	}
 
-	return nil
+	return err
+
 }
 
 // MkDir 创建文件夹
@@ -54,8 +69,8 @@ func MkDir(src string) error {
 	return nil
 }
 
-// Open 打开
-func Open(name string, flag int, perm os.FileMode) (*os.File, error) {
+// OpenFile 打开
+func OpenFile(name string, flag int, perm os.FileMode) (*os.File, error) {
 	f, err := os.OpenFile(name, flag, perm)
 	if err != nil {
 		return nil, err

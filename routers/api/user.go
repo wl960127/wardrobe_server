@@ -18,7 +18,7 @@ type auth struct {
 	Mobile   string `form:"mobile" binding:"required"`
 	Password string `form:"password" binding:"required"` //required 表示必填
 	Username string `form:"username" `
-	Sex int `form:"sex" `
+	Sex      int    `form:"sex" `
 }
 
 // Auth  获取TOKEN 需要先注册 .
@@ -90,7 +90,7 @@ func AddUser(c *gin.Context) {
 	fmt.Printf("  请求数据  %s %s", reqInfo.Mobile, reqInfo.Password)
 
 	valid := validation.Validation{}
-	valid.MaxSize(reqInfo.Mobile,11, "mobile").Message("最长为11字符")
+	valid.MaxSize(reqInfo.Mobile, 11, "mobile").Message("最长为11字符")
 	valid.MaxSize(reqInfo.Password, 15, "password").Message("最长为15字符")
 	valid.MaxSize(reqInfo.Username, 20, "username").Message("最长为20字符")
 
@@ -120,7 +120,7 @@ func QureyUser(c *gin.Context) {
 
 	mobile := c.GetString("claimsMobile")
 
-	fmt.Printf("token   %s",mobile)
+	fmt.Printf("token   %s", mobile)
 	userService := userservice.User{Mobile: mobile}
 
 	user, err := userService.Get()
@@ -131,10 +131,9 @@ func QureyUser(c *gin.Context) {
 
 	appG.Response(http.StatusOK, e.SUCCESS, gin.H{
 		// "info": auth{Username: user.Username,Sex: user.Sex},
-		"info": gin.H {
+		"info": gin.H{
 			"username": user.Username,
-			"sex": user.Sex,
+			"sex":      user.Sex,
 		},
-	
 	})
 }

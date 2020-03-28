@@ -1,7 +1,6 @@
 package jwt
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 	"wardrobe_server/pkg/e"
@@ -47,7 +46,7 @@ func JWT() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		fmt.Printf("JWT中间件 %d %s", claims.ID, claims.Mobile)
+		// fmt.Printf("JWT中间件 %d %s", claims.ID, claims.Mobile)
 		c.Set("claimsID", claims.ID)
 		c.Set("claimsMobile", claims.Mobile)
 		c.Next()

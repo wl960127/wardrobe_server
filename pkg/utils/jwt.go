@@ -13,13 +13,13 @@ var jwtSecret = []byte(setting.AppSetting.JwtSecret)
 // Claims .
 type Claims struct {
 	Mobile   string `json:"mobile"`
-	ID uint `json:"id"`
+	ID int `json:"id"`
 	// Password string `json:"password"`
 	jwt.StandardClaims
 }
 
 // GenerateToken 使用id 账号 密码 生成 token.
-func GenerateToken(id uint ,mobile, password string) (string, error) {
+func GenerateToken(id int ,mobile, password string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(3 * time.Hour)
 

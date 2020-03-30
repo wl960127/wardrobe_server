@@ -16,9 +16,9 @@ func QueryUser(mobile, password string) (bool, error) {
 		return false, nil
 	}
 
-	fmt.Printf(" 数据库查寻 %d %s %s ", user.ID, user.Mobile, user.Password)
+	fmt.Printf(" 数据库查寻 %d %s %s ", user.UserID, user.Mobile, user.Password)
 
-	if user.ID > 0 {
+	if user.UserID > 0 {
 		return true, nil
 	}
 
@@ -26,9 +26,9 @@ func QueryUser(mobile, password string) (bool, error) {
 }
 
 // GetUser .
-func GetUser(mobile string) (*User, error) {
+func GetUser(claimsID int) (*User, error) {
 	var user User
-	err := db.Where(&User{Mobile: mobile}).First(&user).Error
+	err := db.Where(&User{UserID: claimsID}).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func CheckUser(mobile, username string) (bool, error) {
 		return false, err
 	}
 
-	if user.ID > 0 {
+	if user.UserID > 0 {
 		return true, nil
 	}
 	return false, nil

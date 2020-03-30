@@ -30,6 +30,7 @@ func InitRouter() *gin.Engine {
 		apiV1.GET("/users", api.QureyUser)
 
 		apiV1.POST("/pics", v1.AddPic)
+		apiV1.GET("pics",v1.QueryPic)
 
 		// apiV1.GET("/userInfo", api.GetUserInfo)
 

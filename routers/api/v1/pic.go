@@ -4,10 +4,12 @@ import (
 	"crypto/md5"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
+	"wardrobe_server/models"
 	"wardrobe_server/pkg/app"
 	"wardrobe_server/pkg/e"
 	"wardrobe_server/pkg/logging"
@@ -16,6 +18,7 @@ import (
 
 	// "github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
+	"github.com/iarray/pkg/ddd/infrastruct/db"
 )
 
 //
@@ -114,7 +117,6 @@ func AddPic(c *gin.Context) {
 
 	fileFullPath := filepath.Join(folderPath, md5Hex+extName)
 
-
 	// f, err := utils.OpenFile(fileFullPath, os.O_RDWR|os.O_CREATE, 0644)
 	f, err := os.OpenFile(fileFullPath, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
@@ -153,11 +155,13 @@ func AddPic(c *gin.Context) {
 	appG.Response(http.StatusBadRequest, e.ERROR_ADD_FAIL, nil)
 	return
 
-	// func UpdatePic(c *gin.Context)  {
+}
 
-	// }
+// QueryPic 根据类型加载图片
+func QueryPic(c *gin.Context) {
+	// appG := app.Gin{C :c}
 
-	// func DelPic(c *gin.Context)  {
+	// userID := c.GetInt("claimsID")
 
 }
 

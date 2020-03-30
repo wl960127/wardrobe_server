@@ -26,7 +26,7 @@ func (a *User) Check() (bool, error) {
 
 // Get .
 func (a *User) Get() (*models.User, error) {
-	user, err := models.GetUser(a.Mobile)
+	user, err := models.GetUser(a.ID)
 	if err != nil {
 		return nil, err
 	}

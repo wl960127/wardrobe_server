@@ -65,7 +65,7 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	token, err := utils.GenerateToken(user.ID, reqInfo.Mobile, reqInfo.Password)
+	token, err := utils.GenerateToken(user.UserID, user.Mobile, user.Password)
 
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
@@ -118,10 +118,10 @@ func QureyUser(c *gin.Context) {
 	// var claims utils.Claims
 	appG := app.Gin{C: c}
 
-	mobile := c.GetString("claimsMobile")
+	userID := c.GetInt("claimsID")
 
-	fmt.Printf("token   %s", mobile)
-	userService := userservice.User{Mobile: mobile}
+	fmt.Printf("token   %d", userID)
+	userService := userservice.User{ID: userID}
 
 	user, err := userService.Get()
 	if err != nil {
@@ -134,6 +134,7 @@ func QureyUser(c *gin.Context) {
 		"info": gin.H{
 			"username": user.Username,
 			"sex":      user.Sex,
+			"id":       user.UserID,
 		},
 	})
 }

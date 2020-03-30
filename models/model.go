@@ -13,7 +13,7 @@ import (
 
 // User id自增  手机号要唯一 .
 type User struct {
-	gorm.Model
+	UserID   int `gorm:"primary_key;AUTO_INCREMENT"`
 	Username string
 	Mobile   string `gorm:"not null;unique" json:"mobile"`
 	Password string `gorm:"not null" json:"password"`
@@ -37,7 +37,7 @@ type Picture struct {
 	TYPE         string // 上衣之类
 	SEASON       int    // 季节  0 默认
 	Count        int    // 调用次数 每次使用就 +1
-	Size         int64    // 图片大小
+	Size         int64  // 图片大小
 }
 
 // Note 每日穿搭.

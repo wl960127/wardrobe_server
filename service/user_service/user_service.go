@@ -13,13 +13,14 @@ type User struct {
 	Username string
 	Mobile   string
 	Password string
+	// UserID int
 
 	CreatedBy  string
 	ModifiedBy string
 }
 
 // Check .
-func (a *User) Check() (bool, error) {
+func (a *User) Check() (bool, map[string]interface{},error) {
 	fmt.Printf(" 准备数据库操作 %s  %s  ", a.Mobile, a.Password)
 	return models.QueryUser(a.Mobile, utils.EncodeMD5(a.Password))
 }

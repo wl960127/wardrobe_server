@@ -8,21 +8,23 @@ import (
 )
 
 // QueryUser 查询数据 .
-func QueryUser(mobile, password string) (bool, error) {
+func QueryUser(mobile, password string) (bool,map[string]interface{}, error) {
 	var user User
 	// User{Mobile: mobile, Password: password}
 	// db.Select("id").Where(&User{Mobile: mobile, Password: password})
 	if err := db.Where("Mobile=? and Password=?", mobile, password).First(&user).Error; err != nil {
-		return false, nil
+		return false,nil, nil
 	}
 
 	fmt.Printf(" 数据库查寻 %d %s %s ", user.UserID, user.Mobile, user.Password)
 
 	if user.UserID > 0 {
-		return true, nil
+		return true,map[string]interface{}{
+			"userId":user.UserID,
+		}, nil
 	}
 
-	return false, nil
+	return false,nil, nil
 }
 
 // GetUser .
@@ -32,6 +34,7 @@ func GetUser(claimsID int) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf(" 数据库 传过来的参数  %d  user数据 %d %s  &user的数据   %d ",claimsID,user.UserID,user.Mobile,&user.UserID)
 	return &user, nil
 }
 

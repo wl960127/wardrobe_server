@@ -3,6 +3,7 @@ package api
 import (
 	// "wardrobe_server/middleware/jwt"
 	"fmt"
+	"log"
 	"net/http"
 	"wardrobe_server/pkg/app"
 	"wardrobe_server/pkg/e"
@@ -32,7 +33,7 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	fmt.Printf("请求数据  %s %s", reqInfo.Mobile, reqInfo.Password)
+	log.Printf("请求数据  %s %s", reqInfo.Mobile, reqInfo.Password)
 
 	valid := validation.Validation{}
 
@@ -46,7 +47,11 @@ func Auth(c *gin.Context) {
 	}
 
 	authService := userservice.User{Mobile: reqInfo.Mobile, Password: reqInfo.Password}
-	isExist, err := authService.Check()
+	isExist,data, err := authService.Check()
+
+	authService.ID = data["userId"].(int)
+	
+
 
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
@@ -60,11 +65,13 @@ func Auth(c *gin.Context) {
 
 	user, err := authService.Get()
 
+	fmt.Printf("请求Token %d %s %s", user.UserID, user.Mobile, user.Password)
+
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
 		return
 	}
-
+	
 	token, err := utils.GenerateToken(user.UserID, user.Mobile, user.Password)
 
 	if err != nil {

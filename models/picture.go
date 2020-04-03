@@ -1,7 +1,6 @@
 package models
 
 import (
-
 	"github.com/jinzhu/gorm"
 )
 
@@ -24,7 +23,7 @@ import (
 // CheckImageMD5 检查是否文件存在 md5 可以验证唯一.
 func CheckImageMD5(md5Value string) bool {
 	// var picFile Picture
-	if err := db.Where("md5 = ?", md5Value).Find(&Picture{}).Error; err != gorm.ErrRecordNotFound {
+	if err := db.Where("md5 = ?", md5Value).First(&Picture{}).Error; err != gorm.ErrRecordNotFound {
 		return true
 	}
 	return false
@@ -33,26 +32,42 @@ func CheckImageMD5(md5Value string) bool {
 // AddPic 添加图片
 func AddPic(data map[string]interface{}) error {
 
-	
-	// for k, v := range data {
-	// 	fmt.Println(k, v)
-	// }
-
-	// fmt.Printf("map长度 %d",len(data))
-
-	 if err :=	db.Create(&Picture{
-		MD5: data["md5"].(string),
-		URL:data["url"].(string),
-		AbsolutePath:data["absolutePath"].(string),
-		BRAND:data["brand"].(string),
-		COLOR:data["color"].(string),
-		LABLE:data["lable"].(string),
-		TYPE:data["type"].(string),
-		SEASON:data["season"].(int),
-		Size:data["size"].(int64),
-	}).Error;err!=nil{
+	if err := db.Create(&Picture{
+		UserID:       data["userid"].(int),
+		MD5:          data["md5"].(string),
+		URL:          data["url"].(string),
+		AbsolutePath: data["absolutePath"].(string),
+		BRAND:        data["brand"].(string),
+		COLOR:        data["color"].(string),
+		LABLE:        data["lable"].(string),
+		TYPE:         data["type"].(int),
+		SEASON:       data["season"].(int),
+		Size:         data["size"].(int64),
+	}).Error; err != nil {
 		return err
 	}
 
 	return nil
+}
+
+// QueryPic 查询所有类别
+func QueryPic(userID int) ([]Picture, error) {
+	// db.Model()
+
+	var pic []Picture
+	if err := db.Where("user_id = ?", userID).Find(&pic).Error; err != nil {
+		return nil, err
+	}
+
+	return pic, err
+}
+
+// QueryByType 按照类别查询
+func QueryByType() {
+
+}
+
+// UpdatePic 图片信息修改
+func UpdatePic() {
+
 }

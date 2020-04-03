@@ -7,6 +7,7 @@ import (
 
 // Pic picservice.
 type Pic struct {
+	UserID       int
 	Md5          string
 	URL          string
 	AbsolutePath string
@@ -33,8 +34,10 @@ func CheckImageMD5(md5Value string) bool {
 
 // AddPic .
 func (pic *Pic) AddPic() error {
+
 	data := map[string]interface{}{
-		"md5":         pic.Md5,
+		"userid":       pic.UserID,
+		"md5":          pic.Md5,
 		"url":          pic.URL,
 		"absolutePath": pic.AbsolutePath,
 		"brand":        pic.Brand,
@@ -45,7 +48,20 @@ func (pic *Pic) AddPic() error {
 		"size":         pic.Size,
 	}
 	return models.AddPic(data)
+}
 
-	// fmt.Printf("图片信息 %s %s ",pic.Md5,pic.URL)
-	// return nil
+// QueryPic 数据库查看对应的所有图片
+func (pic *Pic) QueryPic() map[string]interface{} {
+	var picList []models.Picture
+	var err error
+	if picList, err = models.QueryPic(pic.UserID); err != nil {
+		return map[string]interface{}{
+			"msg": nil,
+			"err": err.Error(),
+		}
+	}
+	return map[string]interface{}{
+		"mag": picList,
+		"err": nil,
+	}
 }

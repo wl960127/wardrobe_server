@@ -21,20 +21,20 @@ type User struct {
 	Picture  []Picture
 	Note     []Note
 }
-
 // Picture .
 type Picture struct {
 	gorm.Model
 	// MD5    string `gorm:"not null;unique"`
 	// URL    string `gorm:"not null;unique"`
 	// AbsolutePath    string `gorm:"not null;unique"`
+	UserID        int
 	MD5          string `gorm:"unique"`
 	URL          string `gorm:"unique"`
 	AbsolutePath string `gorm:"unique"`
 	BRAND        string // 品牌
 	COLOR        string //颜色
 	LABLE        string // 备注
-	TYPE         string // 上衣之类
+	TYPE         int // 上衣之类
 	SEASON       int    // 季节  0 默认
 	Count        int    // 调用次数 每次使用就 +1
 	Size         int64  // 图片大小
@@ -42,6 +42,7 @@ type Picture struct {
 
 // Note 每日穿搭.
 type Note struct {
+	UserID        int
 	gorm.Model
 	Experience string // 心得 备注
 	pic0       string

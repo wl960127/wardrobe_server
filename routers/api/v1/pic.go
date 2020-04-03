@@ -4,12 +4,10 @@ import (
 	"crypto/md5"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
-	"wardrobe_server/models"
 	"wardrobe_server/pkg/app"
 	"wardrobe_server/pkg/e"
 	"wardrobe_server/pkg/logging"
@@ -18,7 +16,6 @@ import (
 
 	// "github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
-	"github.com/iarray/pkg/ddd/infrastruct/db"
 )
 
 //
@@ -34,6 +31,10 @@ type pic struct {
 func AddPic(c *gin.Context) {
 	appG := app.Gin{C: c}
 	var picInfo pic
+
+	
+
+	userID := c.GetInt("claimsID")
 
 	// 获取文件
 	picFile, err := c.FormFile("file")
@@ -137,6 +138,7 @@ func AddPic(c *gin.Context) {
 	// fileName := fmt.Sprintf("%s%s", md5Hex, extName)
 
 	picService := picservice.Pic{
+		UserID: userID,
 		Md5:          md5Hex,
 		URL:          fileFullPath,
 		AbsolutePath: absPath,
@@ -159,9 +161,14 @@ func AddPic(c *gin.Context) {
 
 // QueryPic 根据类型加载图片
 func QueryPic(c *gin.Context) {
-	// appG := app.Gin{C :c}
+	appG := app.Gin{C: c}
 
-	// userID := c.GetInt("claimsID")
+	userID := c.GetInt("claimsID")
+
+	picService := picservice.Pic{UserID: userID}
+
+	data := picService.QueryPic()
+	appG.Response(http.StatusOK, e.SUCCESS, data)
 
 }
 

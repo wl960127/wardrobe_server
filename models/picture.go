@@ -21,12 +21,12 @@ import (
 //AddPic
 
 // CheckImageMD5 检查是否文件存在 md5 可以验证唯一.
-func CheckImageMD5(md5Value string) bool {
-	// var picFile Picture
+func CheckImageMD5(md5Value string) (isExit bool,url, absolutePath string) {
+	var picFile Picture
 	if err := db.Where("md5 = ?", md5Value).First(&Picture{}).Error; err != gorm.ErrRecordNotFound {
-		return true
+		return true,picFile.URL,picFile.AbsolutePath
 	}
-	return false
+	return false,"",""
 }
 
 // AddPic 添加图片

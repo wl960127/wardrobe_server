@@ -105,7 +105,8 @@ func AddPic(c *gin.Context) {
 	// 计算文件 md5值
 	md5Hex := fmt.Sprintf("%x", hash.Sum(nil))
 
-	// 有的话就不处理了吧
+	// 有的话 就不做创建处理 直接插入数据
+
 	if isExist := picservice.CheckImageMD5(md5Hex); isExist == true {
 		appG.Response(http.StatusOK, e.SUCCESS, nil)
 		return

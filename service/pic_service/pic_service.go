@@ -26,10 +26,10 @@ type Pic struct {
 // }
 
 // CheckImageMD5 检查文件 md5 值
-func CheckImageMD5(md5Value string) bool {
-	isExist := models.CheckImageMD5(md5Value)
+func CheckImageMD5(md5Value string) (isExit bool,url, absolutePath string) {
+	isExist,url,absolutePath := models.CheckImageMD5(md5Value)
 	fmt.Printf("\n %s 是否存在 %t  ", md5Value, isExist)
-	return isExist
+	return isExist,url,absolutePath
 }
 
 // AddPic .

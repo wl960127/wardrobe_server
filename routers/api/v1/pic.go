@@ -32,8 +32,6 @@ func AddPic(c *gin.Context) {
 	appG := app.Gin{C: c}
 	var picInfo pic
 
-	
-
 	userID := c.GetInt("claimsID")
 
 	// 获取文件
@@ -105,11 +103,30 @@ func AddPic(c *gin.Context) {
 	// 计算文件 md5值
 	md5Hex := fmt.Sprintf("%x", hash.Sum(nil))
 
-	// 有的话就不处理了吧
-	if isExist := picservice.CheckImageMD5(md5Hex); isExist == true {
-		appG.Response(http.StatusOK, e.SUCCESS, nil)
+	// 有的话 就直接返回相对路径和绝对路径 插入
+	if isExist, url, absolutePath := picservice.CheckImageMD5(md5Hex); isExist == true {
+
+		picService := picservice.Pic{
+			UserID:       userID,
+			Md5:          md5Hex,
+			URL:          url,
+			AbsolutePath: absolutePath,
+			Brand:        picInfo.BRAND,
+			Color:        picInfo.COLOR,
+			Lable:        picInfo.LABLE,
+			Type:         picInfo.TYPE,
+			Size:         picFile.Size,
+		}
+	
+		if err := picService.AddPic(); err == nil {
+			appG.Response(http.StatusOK, e.SUCCESS, nil)
+			return
+		}
+	
+		appG.Response(http.StatusBadRequest, e.ERROR_ADD_FAIL, nil)
 		return
 	}
+
 	// 获取后缀
 	extName := utils.GetExt(picFile.Filename)
 	if extName == "" {
@@ -138,7 +155,7 @@ func AddPic(c *gin.Context) {
 	// fileName := fmt.Sprintf("%s%s", md5Hex, extName)
 
 	picService := picservice.Pic{
-		UserID: userID,
+		UserID:       userID,
 		Md5:          md5Hex,
 		URL:          fileFullPath,
 		AbsolutePath: absPath,

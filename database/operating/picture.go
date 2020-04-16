@@ -1,6 +1,9 @@
-package models
+package operating
+
 
 import (
+	"wardrobe_server/database"
+	"wardrobe_server/database/entity"
 	"github.com/jinzhu/gorm"
 )
 
@@ -22,8 +25,8 @@ import (
 
 // CheckImageMD5 检查是否文件存在 md5 可以验证唯一.
 func CheckImageMD5(md5Value string) (isExit bool,url, absolutePath string) {
-	var picFile Picture
-	if err := db.Where("md5 = ?", md5Value).First(&Picture{}).Error; err != gorm.ErrRecordNotFound {
+	var picFile entity.Picture
+	if err := database.GetDb().Where("md5 = ?", md5Value).First(&entity.Picture{}).Error; err != gorm.ErrRecordNotFound {
 		return true,picFile.URL,picFile.AbsolutePath
 	}
 	return false,"",""
@@ -32,7 +35,7 @@ func CheckImageMD5(md5Value string) (isExit bool,url, absolutePath string) {
 // AddPic 添加图片
 func AddPic(data map[string]interface{}) error {
 
-	if err := db.Create(&Picture{
+	if err := database.GetDb().Create(&entity.Picture{
 		UserID:       data["userid"].(int),
 		MD5:          data["md5"].(string),
 		URL:          data["url"].(string),
@@ -51,11 +54,12 @@ func AddPic(data map[string]interface{}) error {
 }
 
 // QueryPic 查询所有类别
-func QueryPic(userID int) ([]Picture, error) {
+func QueryPic(userID int) ([]entity.Picture, error) {
 	// db.Model()
 
-	var pic []Picture
-	if err := db.Where("user_id = ?", userID).Find(&pic).Error; err != nil {
+	var pic []entity.Picture
+	var err error
+	if err = database.GetDb().Where("user_id = ?", userID).Find(&pic).Error; err != nil {
 		return nil, err
 	}
 

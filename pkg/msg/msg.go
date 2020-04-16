@@ -1,4 +1,5 @@
-package e
+package msg
+
 
 const (
 	SUCCESS        = 200

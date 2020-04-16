@@ -1,4 +1,11 @@
-package models
+package operating
+
+import (
+	"wardrobe_server/database"
+)
+
+
+
 
 // Auth .
 type Auth struct {
@@ -10,7 +17,7 @@ type Auth struct {
 // CheckAuth .
 func CheckAuth(mobile, password string) bool {
 	var auth Auth
-	db.Select("id").Where(Auth{Mobile: mobile, Password: password}).First(&auth)
+	database.GetDb().Select("id").Where(Auth{Mobile: mobile, Password: password}).First(&auth)
 	if auth.ID > 0 {
 		return true
 	}

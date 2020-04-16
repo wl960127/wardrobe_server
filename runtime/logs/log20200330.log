@@ -1,4 +1,0 @@
-[ERROR][model.go:84]2020/03/30 16:40:41 [Error 1045: Access denied for user 'root'@'localhost' (using password: YES)]
-[INFO][model.go:90]2020/03/30 16:41:03 [数据库初始化]
-[INFO][model.go:90]2020/03/30 16:58:43 [数据库初始化]
-[INFO][model.go:90]2020/03/30 18:05:41 [数据库初始化]

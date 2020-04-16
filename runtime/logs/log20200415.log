@@ -1,7 +1,0 @@
-[INFO][model.go:91]2020/04/15 18:16:04 [数据库初始化]
-[ERROR][model.go:85]2020/04/15 22:10:28 [dial tcp 127.0.0.1:3306: connectex: No connection could be made because the target machine actively refused it.]
-[ERROR][model.go:85]2020/04/15 22:11:04 [Error 1045: Access denied for user 'root'@'localhost' (using password: YES)]
-[INFO][model.go:91]2020/04/15 22:11:38 [数据库初始化]
-[INFO][model.go:100]2020/04/15 22:22:15 [数据库初始化]
-[INFO][model.go:100]2020/04/15 22:25:13 [数据库初始化]
-[INFO][model.go:100]2020/04/15 22:25:51 [数据库初始化]

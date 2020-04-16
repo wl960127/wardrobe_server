@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"wardrobe_server/pkg/app"
+	"wardrobe_server/pkg/msg"
 	"crypto/md5"
 	"fmt"
 	"io/ioutil"
@@ -8,11 +10,9 @@ import (
 	"os"
 	"path/filepath"
 	"time"
-	"wardrobe_server/pkg/app"
-	"wardrobe_server/pkg/e"
 	"wardrobe_server/pkg/logging"
 	"wardrobe_server/pkg/utils"
-	picservice "wardrobe_server/service/pic_service"
+	picservice "wardrobe_server/service/picService"
 
 	// "github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
@@ -23,7 +23,7 @@ type pic struct {
 	BRAND  string `form:"brand" `  // 品牌
 	COLOR  string `form:"color" `  //颜色
 	LABLE  string `form:"lable" `  // 备注
-	TYPE   string `form:"type" `   // 上衣之类
+	TYPE   int `form:"type" `   // 上衣之类
 	SEASON int    `form:"season" ` // 季节  0 默认
 }
 
@@ -39,7 +39,7 @@ func AddPic(c *gin.Context) {
 	if err != nil {
 		// log.Println("文件上传失败")
 		logging.Info("文件上传失败 " + err.Error())
-		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		appG.Response(http.StatusBadRequest, msg.INVALID_PARAMS, nil)
 		return
 	}
 
@@ -48,11 +48,11 @@ func AddPic(c *gin.Context) {
 	// 获取参数
 
 	if err := c.ShouldBind(&picInfo); err != nil {
-		logging.Info("品牌 %s 颜色 %s 备注 %s 类别 %s 季节%d \n %s", picInfo.BRAND, picInfo.COLOR, picInfo.LABLE, picInfo.TYPE, picInfo.SEASON, err.Error)
-		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		// logging.Info("品牌 %s 颜色 %s 备注 %s 类别 %s 季节%d \n %s", picInfo.BRAND, picInfo.COLOR, picInfo.LABLE, picInfo.TYPE, picInfo.SEASON, err.Error)
+		appG.Response(http.StatusBadRequest, msg.INVALID_PARAMS, nil)
 		return
 	}
-	fmt.Printf("品牌 %s 颜色 %s 备注 %s 类别 %s 季节%d", picInfo.BRAND, picInfo.COLOR, picInfo.LABLE, picInfo.TYPE, picInfo.SEASON)
+	fmt.Printf("品牌 %s 颜色 %s 备注 %s 类别 %d 季节%d", picInfo.BRAND, picInfo.COLOR, picInfo.LABLE, picInfo.TYPE, picInfo.SEASON)
 
 	// valid := validation.Validation{}
 	// valid.Max(picInfo.BRAND, 100, "brand").Message("最长为100字符")
@@ -67,43 +67,26 @@ func AddPic(c *gin.Context) {
 	// 	return
 	// }
 
-	// 创建文件夹存储图片
-	faceDir := "upload/pic"
-	datePath := time.Now().Format("200601")
-	folderPath := "./" + faceDir + "/" + datePath
-
-	utils.IsNotExistMkDir(folderPath)
-	fmt.Printf("创建 文件夹%s  ", folderPath)
-
-	// make(*models.Picture{},0,2)
-
-	if err := utils.IsNotExistMkDir(folderPath); err != nil {
-		fmt.Printf("/n 创建文件夹失败 不继续了")
-		appG.Response(http.StatusBadRequest, e.ERROR_ADD_FAIL, nil)
-		return
-	}
-	// createDirIfNotExists(folderPath)
-
+	//文件获取 检查异常
 	src, err := picFile.Open()
+	//文件打开异常
 	if err != nil {
-		appG.Response(http.StatusBadRequest, e.ERROR_ADD_FAIL, nil)
+		appG.Response(http.StatusBadRequest, msg.ERROR_ADD_FAIL, nil)
 		return
 	}
-
-	// log.Printf("上传的文件名字 %s", picFile.Filename)
-
+	// 读取文件
 	buf, err := ioutil.ReadAll(src)
 	if err != nil {
 		logging.Info(" 读取文件错误 %s\n", err.Error)
-		appG.Response(http.StatusBadRequest, e.ERROR_ADD_FAIL, nil)
+		appG.Response(http.StatusBadRequest, msg.ERROR_ADD_FAIL, nil)
 		return
 	}
 	hash := md5.New()
 	hash.Write(buf)
-	// 计算文件 md5值
+	//计算 md5
 	md5Hex := fmt.Sprintf("%x", hash.Sum(nil))
 
-	// 有的话 就直接返回相对路径和绝对路径 插入
+	//检查是否存在 有的话 就直接返回相对路径和绝对路径 插入
 	if isExist, url, absolutePath := picservice.CheckImageMD5(md5Hex); isExist == true {
 
 		picService := picservice.Pic{
@@ -117,13 +100,30 @@ func AddPic(c *gin.Context) {
 			Type:         picInfo.TYPE,
 			Size:         picFile.Size,
 		}
-	
+
 		if err := picService.AddPic(); err == nil {
-			appG.Response(http.StatusOK, e.SUCCESS, nil)
+			appG.Response(http.StatusOK, msg.SUCCESS, nil)
 			return
 		}
-	
-		appG.Response(http.StatusBadRequest, e.ERROR_ADD_FAIL, nil)
+
+		appG.Response(http.StatusBadRequest, msg.ERROR_ADD_FAIL, nil)
+		return
+	}
+
+
+	// 创建文件夹存储图片
+	faceDir := "upload/pic"
+	datePath := time.Now().Format("200601")
+	folderPath := "./" + faceDir + "/" + datePath
+
+	utils.IsNotExistMkDir(folderPath)
+	fmt.Printf("创建 文件夹%s  ", folderPath)
+
+	// make(*models.Picture{},0,2)
+
+	if err := utils.IsNotExistMkDir(folderPath); err != nil {
+		fmt.Printf("/n 创建文件夹失败 不继续了")
+		appG.Response(http.StatusBadRequest, msg.ERROR_ADD_FAIL, nil)
 		return
 	}
 
@@ -139,7 +139,7 @@ func AddPic(c *gin.Context) {
 	f, err := os.OpenFile(fileFullPath, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		fmt.Printf("\n打开文件失败 %s  ", err.Error())
-		appG.Response(http.StatusBadRequest, e.ERROR_ADD_FAIL, nil)
+		appG.Response(http.StatusBadRequest, msg.ERROR_ADD_FAIL, nil)
 		return
 	}
 
@@ -147,12 +147,9 @@ func AddPic(c *gin.Context) {
 
 	if _, err := f.Write(buf); err != nil {
 		fmt.Printf("写入文件 %s  ", err.Error())
-		appG.Response(http.StatusBadRequest, e.ERROR_ADD_FAIL, nil)
+		appG.Response(http.StatusBadRequest, msg.ERROR_ADD_FAIL, nil)
 		return
 	}
-	f.Close()
-	// log.Printf("Write Image File Success, path=%s", fileFullPath)
-	// fileName := fmt.Sprintf("%s%s", md5Hex, extName)
 
 	picService := picservice.Pic{
 		UserID:       userID,
@@ -167,11 +164,11 @@ func AddPic(c *gin.Context) {
 	}
 
 	if err := picService.AddPic(); err == nil {
-		appG.Response(http.StatusOK, e.SUCCESS, nil)
+		appG.Response(http.StatusOK, msg.SUCCESS, nil)
 		return
 	}
 
-	appG.Response(http.StatusBadRequest, e.ERROR_ADD_FAIL, nil)
+	appG.Response(http.StatusBadRequest, msg.ERROR_ADD_FAIL, nil)
 	return
 
 }
@@ -185,7 +182,7 @@ func QueryPic(c *gin.Context) {
 	picService := picservice.Pic{UserID: userID}
 
 	data := picService.QueryPic()
-	appG.Response(http.StatusOK, e.SUCCESS, data)
+	appG.Response(http.StatusOK, msg.SUCCESS, data)
 
 }
 

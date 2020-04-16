@@ -45,11 +45,10 @@ func IsNotExistMkDir(dir string)  error{
 		if err != nil {
 			fmt.Printf("\n创建文件夹失败 failed![%v]\n", err)
 			return err
-		} else {
+		} 
 			fmt.Printf("\n 创建文件夹成功!\n")
 
-			return nil
-		}
+		
 	}
 	if os.IsExist(err) {
 		return nil

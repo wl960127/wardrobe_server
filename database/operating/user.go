@@ -1,18 +1,21 @@
-package models
+package operating
+
+
 
 import (
+	"wardrobe_server/database/entity"
+	"wardrobe_server/database"
 	"fmt"
-	"time"
 
 	"github.com/jinzhu/gorm"
 )
 
 // QueryUser 查询数据 .
 func QueryUser(mobile, password string) (bool,map[string]interface{}, error) {
-	var user User
+	var user entity.User
 	// User{Mobile: mobile, Password: password}
 	// db.Select("id").Where(&User{Mobile: mobile, Password: password})
-	if err := db.Where("Mobile=? and Password=?", mobile, password).First(&user).Error; err != nil {
+	if err := database.GetDb().Where("Mobile=? and Password=?", mobile, password).First(&user).Error; err != nil {
 		return false,nil, nil
 	}
 
@@ -28,9 +31,9 @@ func QueryUser(mobile, password string) (bool,map[string]interface{}, error) {
 }
 
 // GetUser .
-func GetUser(claimsID int) (*User, error) {
-	var user User
-	err := db.Where(&User{UserID: claimsID}).First(&user).Error
+func GetUser(claimsID int) (*entity.User, error) {
+	var user entity.User
+	err := database.GetDb().Where(&entity.User{UserID: claimsID}).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +43,7 @@ func GetUser(claimsID int) (*User, error) {
 
 // AddUser 添加 .
 func AddUser(data map[string]interface{}) error {
-	err := db.Create(&User{
+	err := database.GetDb().Create(&entity.User{
 		Mobile:    data["mobile"].(string),
 		Password:  data["password"].(string),
 		Username:  data["username"].(string),
@@ -58,8 +61,8 @@ func AddUser(data map[string]interface{}) error {
 
 // CheckUser .
 func CheckUser(mobile, username string) (bool, error) {
-	var user User
-	err := db.Where("mobile = ? ", mobile).First(&user).Error
+	var user entity.User
+	err := database.GetDb().Where("mobile = ? ", mobile).First(&user).Error
 
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return false, err
@@ -76,16 +79,3 @@ func UpdateUser() {
 
 }
 
-// BeforeCreate .
-func (user *User) BeforeCreate(scope *gorm.Scope) error {
-	scope.SetColumn("CreatedOn", time.Now().Unix())
-
-	return nil
-}
-
-// BeforeUpdate .
-func (user *User) BeforeUpdate(scope *gorm.Scope) error {
-	scope.SetColumn("ModifiedOn", time.Now().Unix())
-
-	return nil
-}

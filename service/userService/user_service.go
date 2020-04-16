@@ -1,10 +1,12 @@
 package userservice
 
 import (
+	"wardrobe_server/database/entity"
+	"wardrobe_server/database/operating"
 	"errors"
 	"fmt"
-	"wardrobe_server/models"
 	"wardrobe_server/pkg/utils"
+
 )
 
 // User .
@@ -22,12 +24,12 @@ type User struct {
 // Check .
 func (a *User) Check() (bool, map[string]interface{},error) {
 	fmt.Printf(" 准备数据库操作 %s  %s  ", a.Mobile, a.Password)
-	return models.QueryUser(a.Mobile, utils.EncodeMD5(a.Password))
+	return operating.QueryUser(a.Mobile, utils.EncodeMD5(a.Password))
 }
 
 // Get .
-func (a *User) Get() (*models.User, error) {
-	user, err := models.GetUser(a.ID)
+func (a *User) Get() (*entity.User, error) {
+	user, err := operating.GetUser(a.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -44,12 +46,12 @@ func (a *User) Add() error {
 		"password": utils.EncodeMD5(a.Password),
 	}
 
-	isHas, err := models.CheckUser(a.Mobile, a.Username)
+	isHas, err := operating.CheckUser(a.Mobile, a.Username)
 
 	if isHas {
 		return errors.New("该账号已经存在")
 	}
-	if err := models.AddUser(data); err == nil {
+	if err := operating.AddUser(data); err == nil {
 		return nil
 	}
 	return err

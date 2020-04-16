@@ -1,10 +1,10 @@
 package jwt
 
 import (
+	"wardrobe_server/pkg/msg"
 	"net/http"
 	"fmt"
 	"strings"
-	"wardrobe_server/pkg/e"
 	"wardrobe_server/pkg/utils"
 
 	"github.com/dgrijalva/jwt-go"
@@ -19,28 +19,28 @@ func JWT() gin.HandlerFunc {
 		var claims *utils.Claims
 		var err error
 
-		code = e.SUCCESS
+		code = msg.SUCCESS
 		Authorization := c.GetHeader("Authorization")
 		token := strings.Split(Authorization, " ")
 
 		if Authorization == "" {
-			code = e.INVALID_PARAMS
+			code = msg.INVALID_PARAMS
 		} else {
 			claims, err = utils.ParseToken(token[1])
 			if err != nil {
 				switch err.(*jwt.ValidationError).Errors {
 				case jwt.ValidationErrorExpired:
-					code = e.ERROR_AUTH_CHECK_TOKEN_TIMEOUT
+					code = msg.ERROR_AUTH_CHECK_TOKEN_TIMEOUT
 				default:
-					code = e.ERROR_AUTH_CHECK_TOKEN_FAIL
+					code = msg.ERROR_AUTH_CHECK_TOKEN_FAIL
 				}
 			}
 		}
 
-		if code != e.SUCCESS {
+		if code != msg.SUCCESS {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"code": code,
-				"msg":  e.GetMsg(code),
+				"msg":  msg.GetMsg(code),
 				"data": data,
 			})
 

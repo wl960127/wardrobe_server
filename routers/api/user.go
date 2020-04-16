@@ -1,14 +1,14 @@
 package api
 
 import (
+	"wardrobe_server/pkg/msg"
 	// "wardrobe_server/middleware/jwt"
 	"fmt"
 	"log"
 	"net/http"
-	"wardrobe_server/pkg/app"
-	"wardrobe_server/pkg/e"
 	"wardrobe_server/pkg/utils"
-	userservice "wardrobe_server/service/user_service"
+	"wardrobe_server/pkg/app"
+	userservice "wardrobe_server/service/userService"
 
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
@@ -29,7 +29,7 @@ func Auth(c *gin.Context) {
 
 	// err := c.ShouldBind(&reqInfo)
 	if c.ShouldBind(&reqInfo) != nil {
-		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		appG.Response(http.StatusBadRequest, msg.INVALID_PARAMS, nil)
 		return
 	}
 
@@ -42,7 +42,7 @@ func Auth(c *gin.Context) {
 
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
-		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_FAIL, valid.Errors)
+		appG.Response(http.StatusInternalServerError, msg.ERROR_ADD_FAIL, valid.Errors)
 		return
 	}
 
@@ -51,7 +51,7 @@ func Auth(c *gin.Context) {
 
 
 	if !isExist {
-		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST, map[string]string{
+		appG.Response(http.StatusOK, msg.ERROR_NOT_EXIST, map[string]string{
 			"token": "",
 		})
 		return
@@ -66,18 +66,18 @@ func Auth(c *gin.Context) {
 	fmt.Printf("请求Token %d %s %s", user.UserID, user.Mobile, user.Password)
 
 	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
+		appG.Response(http.StatusInternalServerError, msg.ERROR_AUTH_TOKEN, nil)
 		return
 	}
 	
 	token, err := utils.GenerateToken(user.UserID, user.Mobile, user.Password)
 
 	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
+		appG.Response(http.StatusInternalServerError, msg.ERROR_AUTH_TOKEN, nil)
 		return
 	}
 
-	appG.Response(http.StatusOK, e.SUCCESS, map[string]string{
+	appG.Response(http.StatusOK, msg.SUCCESS, map[string]string{
 		"token": token,
 	})
 }
@@ -89,7 +89,7 @@ func AddUser(c *gin.Context) {
 
 	if err := c.ShouldBind(&reqInfo); err != nil {
 		fmt.Printf("  %s %s %s %s", reqInfo.Mobile, reqInfo.Username, reqInfo.Password, err)
-		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		appG.Response(http.StatusBadRequest, msg.INVALID_PARAMS, nil)
 		return
 	}
 	fmt.Printf("  请求数据  %s %s", reqInfo.Mobile, reqInfo.Password)
@@ -101,7 +101,7 @@ func AddUser(c *gin.Context) {
 
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
-		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_FAIL, valid.Errors)
+		appG.Response(http.StatusInternalServerError, msg.ERROR_ADD_FAIL, valid.Errors)
 		return
 	}
 
@@ -112,10 +112,10 @@ func AddUser(c *gin.Context) {
 	}
 
 	if err := userSercice.Add(); err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_FAIL, err)
+		appG.Response(http.StatusInternalServerError, msg.ERROR_ADD_FAIL, err)
 		return
 	}
-	appG.Response(http.StatusOK, e.SUCCESS, "注册成功")
+	appG.Response(http.StatusOK, msg.SUCCESS, "注册成功")
 }
 
 // QureyUser  .
@@ -130,11 +130,11 @@ func QureyUser(c *gin.Context) {
 
 	user, err := userService.Get()
 	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_NOT_EXIST, err.Error)
+		appG.Response(http.StatusInternalServerError, msg.ERROR_NOT_EXIST, err.Error)
 		return
 	}
 
-	appG.Response(http.StatusOK, e.SUCCESS, gin.H{
+	appG.Response(http.StatusOK, msg.SUCCESS, gin.H{
 		// "info": auth{Username: user.Username,Sex: user.Sex},
 		"info": gin.H{
 			"username": user.Username,

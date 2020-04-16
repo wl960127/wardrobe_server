@@ -1,4 +1,6 @@
-package setting
+package parseconfig
+
+
 
 import (
 	"log"

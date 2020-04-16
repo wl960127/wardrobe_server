@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 )
 
+// EncodeMD5 加密
 func EncodeMD5(value string) string {
 	m := md5.New()
 	m.Write([]byte(value))
@@ -12,6 +13,7 @@ func EncodeMD5(value string) string {
 	return hex.EncodeToString(m.Sum(nil))
 }
 
+// RemoveRepByMap .
 func RemoveRepByMap(slc []string) []string {
 	result := []string{}         //存放返回的不重复切片
 	tempMap := map[string]byte{} // 存放不重复主键

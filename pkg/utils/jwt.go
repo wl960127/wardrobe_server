@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"reflect"
 	"time"
-	"wardrobe_server/pkg/setting"
+	
+	parse_config "wardrobe_server/pkg/app/parseConfig"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
-var jwtSecret = []byte(setting.AppSetting.JwtSecret)
+var jwtSecret = []byte(parse_config.AppSetting.JwtSecret)
 // Claims .
 type Claims struct {
 	Mobile   string `json:"mobile"`

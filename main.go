@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"wardrobe_server/pkg/setting"
 	router "wardrobe_server/routers"
+	parse_config "wardrobe_server/pkg/app/parseConfig"
+
 )
 
 func main() {
@@ -13,10 +14,10 @@ func main() {
 	router := router.InitRouter()
 
 	s := &http.Server{
-		Addr:           fmt.Sprintf(":%d", setting.ServerSetting.HTTPPort),
+		Addr:           fmt.Sprintf(":%d", parse_config.ServerSetting.HTTPPort),
 		Handler:        router,
-		ReadTimeout:    setting.ServerSetting.ReadTimeout,
-		WriteTimeout:   setting.ServerSetting.WriteTimeout,
+		ReadTimeout:    parse_config.ServerSetting.ReadTimeout,
+		WriteTimeout:   parse_config.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
 

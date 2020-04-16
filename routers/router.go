@@ -2,9 +2,10 @@ package router
 
 import (
 	"wardrobe_server/middleware/jwt"
-	"wardrobe_server/pkg/setting"
 	api "wardrobe_server/routers/api"
 	v1 "wardrobe_server/routers/api/v1"
+	parseConfig "wardrobe_server/pkg/app/parseConfig"
+
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,7 +19,7 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
-	gin.SetMode(setting.ServerSetting.RunMode)
+	gin.SetMode(parseConfig.ServerSetting.RunMode)
 	// 数据库查看信息 如果有对应账号密码 就生成token
 	r.GET("/auth", api.Auth)
 

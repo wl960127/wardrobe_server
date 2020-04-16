@@ -49,19 +49,17 @@ func Auth(c *gin.Context) {
 	authService := userservice.User{Mobile: reqInfo.Mobile, Password: reqInfo.Password}
 	isExist,data, err := authService.Check()
 
-	authService.ID = data["userId"].(int)
-	
-
-
-	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
-		return
-	}
 
 	if !isExist {
-		appG.Response(http.StatusUnauthorized, e.ERROR_AUTH, nil)
+		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST, map[string]string{
+			"token": "",
+		})
 		return
 	}
+
+	authService.ID = data["userId"].(int)
+
+
 
 	user, err := authService.Get()
 

@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"time"
 	"wardrobe_server/pkg/logging"
 	"wardrobe_server/pkg/setting"
 
@@ -10,9 +11,15 @@ import (
 	// _ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
-
+// BaseModel .
+type BaseModel struct{
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
+}
 // User id自增  手机号要唯一 .
 type User struct {
+	BaseModel
 	UserID   int `gorm:"primary_key;AUTO_INCREMENT"`
 	Username string
 	Mobile   string `gorm:"not null;unique" json:"mobile"`
@@ -21,20 +28,19 @@ type User struct {
 	Picture  []Picture
 	Note     []Note
 }
+
 // Picture .
 type Picture struct {
-	gorm.Model
-	// MD5    string `gorm:"not null;unique"`
-	// URL    string `gorm:"not null;unique"`
-	// AbsolutePath    string `gorm:"not null;unique"`
-	UserID        int
+
+	BaseModel
+	UserID       int
 	MD5          string `gorm:"unique"`
 	URL          string `gorm:"unique"`
 	AbsolutePath string `gorm:"unique"`
 	BRAND        string // 品牌
 	COLOR        string //颜色
 	LABLE        string // 备注
-	TYPE         int // 上衣之类
+	TYPE         int    // 上衣之类
 	SEASON       int    // 季节  0 默认
 	Count        int    // 调用次数 每次使用就 +1
 	Size         int64  // 图片大小
@@ -42,8 +48,8 @@ type Picture struct {
 
 // Note 每日穿搭.
 type Note struct {
-	UserID        int
-	gorm.Model
+	BaseModel
+	UserID int
 	Experience string // 心得 备注
 	pic0       string
 	pic1       string
@@ -93,7 +99,7 @@ func init() {
 
 	}
 	// 建表
-	db.AutoMigrate(&User{}, &Picture{}, &Note{})
+	db.AutoMigrate(new(User), new(Picture), new(Note))
 }
 
 // CloseDB .

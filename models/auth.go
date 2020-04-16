@@ -1,11 +1,13 @@
 package models
 
+// Auth .
 type Auth struct {
 	ID       int    `gorm:"primary_key" json:"id"`
 	Mobile   string `json:"mobile"`
 	Password string `json:"password"`
 }
 
+// CheckAuth .
 func CheckAuth(mobile, password string) bool {
 	var auth Auth
 	db.Select("id").Where(Auth{Mobile: mobile, Password: password}).First(&auth)

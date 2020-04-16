@@ -31,9 +31,11 @@ type User struct {
 
 // Picture .
 type Picture struct {
-
-	BaseModel
-	UserID       int
+	// MD5    string `gorm:"not null;unique"`
+	// URL    string `gorm:"not null;unique"`
+	// AbsolutePath    string `gorm:"not null;unique"`
+	AutoIncrementEntity
+	UserID        int
 	MD5          string `gorm:"unique"`
 	URL          string `gorm:"unique"`
 	AbsolutePath string `gorm:"unique"`
@@ -48,8 +50,8 @@ type Picture struct {
 
 // Note 每日穿搭.
 type Note struct {
-	BaseModel
-	UserID int
+	AutoIncrementEntity
+	UserID        int
 	Experience string // 心得 备注
 	pic0       string
 	pic1       string
@@ -57,6 +59,14 @@ type Note struct {
 	pic3       string
 	pic4       string
 }
+
+// AutoIncrementEntity 基础属性.
+type AutoIncrementEntity struct{
+	CreatedAt time.Time  `gorm:"column:created_at;"`
+	UpdatedAt time.Time  `gorm:"column:updated_at;"`
+	DeletedAt *time.Time `gorm:"column:deleted_at;" json:"omitempty"`
+}
+
 
 // type
 

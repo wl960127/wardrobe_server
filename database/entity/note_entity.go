@@ -5,9 +5,9 @@ type Note struct {
 	AutoIncrementEntity
 	UserID        int
 	Experience string // 心得 备注
-	pic0       string
-	pic1       string
-	pic2       string
-	pic3       string
-	pic4       string
+	PicWhole       string //整体
+	PicCoat      string   //上衣
+	PicSkirt       string  //裙子
+	PicPants       string  //裤子
+	PicShoes       string  //鞋子
 }

@@ -104,7 +104,7 @@ func AddPic(c *gin.Context) {
 
 		if err := picService.AddPic(); err != nil {
 			fmt.Printf("\n图片存在 但是新增失败 %s", err.Error())
-			appG.Response(http.StatusBadRequest, msg.ERROR_ADD_FAIL, nil)
+			appG.Response(http.StatusBadRequest, msg.ERROR_ADD_FAIL, err.Error())
 			return
 		}
 		appG.Response(http.StatusOK, msg.SUCCESS, nil)

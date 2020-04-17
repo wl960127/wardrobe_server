@@ -21,6 +21,8 @@ type Pic struct {
 	Size         int64  // 图片大小
 }
 
+
+
 // CheckImageSize 获取文件大小
 // func CheckImageSize(f multipare.File)  {
 

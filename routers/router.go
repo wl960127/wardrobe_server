@@ -19,6 +19,8 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
+	r.Static("/upload","./upload")
+
 	gin.SetMode(parseConfig.ServerSetting.RunMode)
 	// 数据库查看信息 如果有对应账号密码 就生成token
 	r.GET("/auth", api.Auth)

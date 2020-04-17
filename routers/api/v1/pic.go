@@ -1,8 +1,6 @@
 package v1
 
 import (
-	"wardrobe_server/pkg/app"
-	"wardrobe_server/pkg/msg"
 	"crypto/md5"
 	"fmt"
 	"io/ioutil"
@@ -10,7 +8,9 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"wardrobe_server/pkg/app"
 	"wardrobe_server/pkg/logging"
+	"wardrobe_server/pkg/msg"
 	"wardrobe_server/pkg/utils"
 	picservice "wardrobe_server/service/picService"
 
@@ -23,7 +23,7 @@ type pic struct {
 	BRAND  string `form:"brand" `  // 品牌
 	COLOR  string `form:"color" `  //颜色
 	LABLE  string `form:"lable" `  // 备注
-	TYPE   int `form:"type" `   // 上衣之类
+	TYPE   int    `form:"type" `   // 上衣之类
 	SEASON int    `form:"season" ` // 季节  0 默认
 }
 
@@ -88,6 +88,7 @@ func AddPic(c *gin.Context) {
 
 	//检查是否存在 有的话 就直接返回相对路径和绝对路径 插入
 	if isExist, url, absolutePath := picservice.CheckImageMD5(md5Hex); isExist == true {
+		fmt.Printf("\n已经存在的信息返回 %s  %s",url,absolutePath)
 
 		picService := picservice.Pic{
 			UserID:       userID,
@@ -101,15 +102,14 @@ func AddPic(c *gin.Context) {
 			Size:         picFile.Size,
 		}
 
-		if err := picService.AddPic(); err == nil {
-			appG.Response(http.StatusOK, msg.SUCCESS, nil)
+		if err := picService.AddPic(); err != nil {
+			fmt.Printf("\n图片存在 但是新增失败 %s", err.Error())
+			appG.Response(http.StatusBadRequest, msg.ERROR_ADD_FAIL, nil)
 			return
 		}
-
-		appG.Response(http.StatusBadRequest, msg.ERROR_ADD_FAIL, nil)
+		appG.Response(http.StatusOK, msg.SUCCESS, nil)
 		return
 	}
-
 
 	// 创建文件夹存储图片
 	faceDir := "upload/pic"

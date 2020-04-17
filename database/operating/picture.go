@@ -2,6 +2,7 @@ package operating
 
 
 import (
+	"fmt"
 	"wardrobe_server/database"
 	"wardrobe_server/database/entity"
 	"github.com/jinzhu/gorm"
@@ -26,7 +27,8 @@ import (
 // CheckImageMD5 检查是否文件存在 md5 可以验证唯一.
 func CheckImageMD5(md5Value string) (isExit bool,url, absolutePath string) {
 	var picFile entity.Picture
-	if err := database.GetDb().Where("md5 = ?", md5Value).First(&entity.Picture{}).Error; err != gorm.ErrRecordNotFound {
+	if err := database.GetDb().Where("md5 = ?", md5Value).First(&picFile).Error; err != gorm.ErrRecordNotFound {
+		fmt.Printf("\n picture.go  %s %s ",picFile.URL,picFile.AbsolutePath);	
 		return true,picFile.URL,picFile.AbsolutePath
 	}
 	return false,"",""

@@ -10,7 +10,7 @@ type Picture struct {
 	// URL    string `gorm:"not null;unique"`
 	// AbsolutePath    string `gorm:"not null;unique"`
 	AutoIncrementEntity
-	UserID       int    `json:"-"`
+	UserID       int    //`json:"-"`
 	MD5          string `gorm:"not nul;" json:"-"`
 	URL          string `gorm:"not nul;" json:"-"`
 	AbsolutePath string `gorm:"not nul;" json:"-"`
@@ -32,7 +32,7 @@ func (p *Picture) MarshalJSON() ([]byte, error) {
 		*picture
 	}{
 		p.UpdatedAt.Unix(),
-		"http://192.168.0.183:8000/" + p.URL,
+		"http://192.168.5.28:8000/" + p.URL,
 		(*picture)(p),
 	}
 	return json.Marshal(pic)

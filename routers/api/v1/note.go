@@ -41,11 +41,11 @@ func AddNote(c *gin.Context)  {
 		PicCoat: noteInfo.PicCoat,
 		PicSkirt: noteInfo.PicSkirt,
 		PicPants: noteInfo.PicPants,
-		PicShoes: noteInfo.PicShoes
+		PicShoes: noteInfo.PicShoes,
 	}
 
 
-	if err :=noteservice.AddNote();err !=nil{
+	if err :=noteService.AddNote();err !=nil{
 		appG.Response(http.StatusBadRequest, msg.ERROR_ADD_FAIL, err.Error())
 		return
 	}

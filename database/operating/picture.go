@@ -68,6 +68,7 @@ func QueryPic(userID int) ([]entity.Picture, error) {
 	return pic, err
 }
 
+
 // QueryByType 按照类别查询
 func QueryByType() {
 

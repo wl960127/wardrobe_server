@@ -7,7 +7,6 @@ import (
 	"wardrobe_server/pkg/msg"
 	noteservice "wardrobe_server/service/noteService"
 
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,36 +20,33 @@ type note struct {
 }
 
 // AddNote 添加note的api 接口
-func AddNote(c *gin.Context)  {
-	appG := app.Gin{C:c}
+func AddNote(c *gin.Context) {
+	appG := app.Gin{C: c}
 
 	var noteInfo note
 
-	if err := c.ShouldBind(&noteInfo);err!=nil {
+	if err := c.ShouldBind(&noteInfo); err != nil {
 		appG.Response(http.StatusBadRequest, msg.INVALID_PARAMS, nil)
 		return
 	}
 
-
 	userID := c.GetInt("claimsID")
 
 	noteService := noteservice.Note{
-		UserID: userID,
+		UserID:     userID,
 		Experience: noteInfo.Experience,
-		PicWhole: noteInfo.PicWhole,
-		PicCoat: noteInfo.PicCoat,
-		PicSkirt: noteInfo.PicSkirt,
-		PicPants: noteInfo.PicPants,
-		PicShoes: noteInfo.PicShoes,
+		PicWhole:   noteInfo.PicWhole,
+		PicCoat:    noteInfo.PicCoat,
+		PicSkirt:   noteInfo.PicSkirt,
+		PicPants:   noteInfo.PicPants,
+		PicShoes:   noteInfo.PicShoes,
 	}
 
-
-	if err :=noteService.AddNote();err !=nil{
+	if err := noteService.AddNote(); err != nil {
 		appG.Response(http.StatusBadRequest, msg.ERROR_ADD_FAIL, err.Error())
 		return
 	}
 	appG.Response(http.StatusOK, msg.SUCCESS, nil)
 	return
-
 
 }
